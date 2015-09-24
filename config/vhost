@@ -1,0 +1,65 @@
+ServerName DOCKER_DOMAIN
+<VirtualHost *:80>
+        ServerName DOCKER_DOMAIN
+
+        Alias /phpmyadmin /var/www/share/phpmyadmin/htdocs
+
+        FcgidBusyTimeout 600
+        FcgidMaxRequestLen 52428800
+        IPCCommTimeout 600
+
+
+        SetEnv MAGE_IS_DEVELOPER_MODE "true"
+
+        ServerAdmin docker@DOCKER_DOMAIN
+        DocumentRoot /var/www/share/DOCKER_DOMAIN/htdocs/
+
+        <Directory /var/www/share>
+            FCGIWrapper /var/www/php-cgi.conf
+            <FilesMatch \.php$>
+                        SetHandler fcgid-script
+            </FilesMatch>
+            Options +FollowSymLinks +ExecCGI
+                AllowOverride All
+                Order allow,deny
+                Allow from all
+        </Directory>
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+</VirtualHost>
+<VirtualHost *:443>
+        ServerName DOCKER_DOMAIN
+
+        Alias /phpmyadmin /var/www/share/phpmyadmin/htdocs
+
+        FcgidBusyTimeout 600
+        FcgidMaxRequestLen 52428800
+        IPCCommTimeout 600
+
+        SetEnv MAGE_IS_DEVELOPER_MODE "true"
+
+        ServerAdmin docker@DOCKER_DOMAIN
+        DocumentRoot /var/www/share/DOCKER_DOMAIN/htdocs/
+
+        SSLEngine on
+        SSLCertificateFile    /etc/apache2/certs/DOCKER_DOMAIN.cert.pem
+        SSLCertificateKeyFile /etc/apache2/certs/DOCKER_DOMAIN.local.key
+
+        <Directory /var/www/share>
+            FCGIWrapper /var/www/php-cgi.conf
+            <FilesMatch \.php$>
+                        SetHandler fcgid-script
+            </FilesMatch>
+            Options +FollowSymLinks +ExecCGI
+                AllowOverride All
+                Order allow,deny
+                Allow from all
+        </Directory>
+
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+</VirtualHost>
