@@ -23,7 +23,7 @@ Configurable Base image for web projects. Some highlights are:
  **Why using this image?**
  Why not :) We are using docker for some month now at www.cts-media.eu and  did build our own reusable base image.
  This took a lot of hours (=> days) to setup and was only be able to do with the help of many blogs about docker, linux and so on.
- So no reason to keep this private. Maybe it can save you some time or give you some ideas for your own base image. 
+ So no reason to keep this private. Maybe it can save you some time or give you some ideas for your own base image.
 
 Thanks to the [phusion guys](http://phusion.github.io/baseimage-docker/) for providing the ubuntu base image.
 
@@ -230,3 +230,70 @@ cts-media.com :
 cts-media.com OK
 cts-media.eu OK
 ```
+
+###  tl;dr Full Example
+So if you made down here you maybe want to have a full example of how to use this image for your company and your projects
+As already mentioned we at ctsmedia are running a company base image which inherits that one here.
+Our Dockerfile for the company images looks like this:
+```
+FROM ctsmedia/baseimage-web:latest
+MAINTAINER ctsmedia <info@cts-media.eu>
+
+################################################################################
+# CTS Config
+################################################################################
+
+### Add employee ssh keys
+COPY config/authorized_keys /tmp/authorized_keys
+RUN cat /tmp/authorized_keys >> /root/.ssh/authorized_keys && rm -f /tmp/authorized_keys
+
+### Add fixed ssh key to docker machine for our deployment tools
+COPY config/id_rsa /root/.ssh/id_rsa
+RUN chmod 600 /root/.ssh/id_rsa
+ADD config/id_rsa.pub /root/.ssh/id_rsa.pub
+
+# No strict host key check for our own repostiories
+RUN touch /root/.ssh/config
+RUN printf "Host gitlab.cts-media.eu\n\tStrictHostKeyChecking no\n" >> /root/.ssh/config
+
+### composer api rate limit token
+RUN composer config -g github-oauth.github.com <tokenreplacedwithplaceholder>
+
+### postfix: default block all recipient_domains but only allow for whitelisted
+RUN echo "smtpd_recipient_restrictions = check_recipient_access hash:/etc/postfix/recipient_domains, reject" >> /etc/postfix/main.cf
+RUN echo "transport_maps = hash:/etc/postfix/transport"  >> /etc/postfix/main.cf
+ADD config/postfix_recipient_domains /etc/postfix/recipient_domains
+ADD config/postfix_transport /etc/postfix/transport
+RUN postmap /etc/postfix/recipient_domains
+RUN postmap /etc/postfix/transport
+```
+
+Our projects Dockerfile than inherit the company one and look like this:
+```
+FROM ctsmedia/baseimage-web-intern:1.0.0
+ENV DOCKER_DOMAIN magentoshop.local
+
+# Maxcluster Server run max. 5.4 atm
+RUN install_php 5.4
+
+ADD .docker-init-env.sh /etc/my_init.d/99_init-env.sh
+RUN chmod +x /etc/my_init.d/99_init-env.sh
+```
+
+The init script itself looks quite the same in most of our projects `.docker-init-env.sh`:
+```
+#!/bin/bash
+echo "Running init script for setting up feature docker environment"
+cd /var/www/share/${DOCKER_DOMAIN}/repos
+echo "Getting repos via ssh"
+git clone git@privatereposserver:groupname/magentostore.git
+echo "Switching to develop branch"
+cd magentostore
+git checkout develop
+echo "Running Deployment Script via phing"
+phing docker-env-init
+```
+
+The phing build will then build and deploy the application.
+
+`:wq`
