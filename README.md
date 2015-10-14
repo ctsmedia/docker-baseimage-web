@@ -32,6 +32,9 @@ So no reason to keep this private. Maybe it can save you some time or give you s
 
 Thanks to the [phusion guys](http://phusion.github.io/baseimage-docker/) for providing the ubuntu base image.
 
+**Docker Pullname: ** `ctsmedia/baseimage-web`  
+**Find on Docker: ** <https://hub.docker.com/r/ctsmedia/baseimage-web/>
+
 
 ## Create the base image
 
