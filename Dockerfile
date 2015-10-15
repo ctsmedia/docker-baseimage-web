@@ -50,6 +50,7 @@ RUN mv phpbrew /usr/bin/phpbrew
 RUN phpbrew init
 RUN echo "export PHPBREW_ROOT=/opt/phpbrew" >> ${HOME}/.phpbrew/init
 RUN echo "source ${HOME}/.phpbrew/bashrc" >> ${HOME}/.bashrc
+RUN phpbrew lookup-prefix ubuntu
 
 ADD scripts/install_php /usr/bin/install_php
 ADD config/php-cgi.conf /var/www/php-cgi.conf
