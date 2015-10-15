@@ -76,13 +76,13 @@ RUN a2enmod fcgid
 ADD config/php-cts.ini /etc/php5/cgi/conf.d/cts-default.ini
 
 ### phpmyadmin
-RUN wget -P /var/www/share/phpmyadmin https://github.com/phpmyadmin/phpmyadmin/archive/master.zip
-RUN unzip /var/www/share/phpmyadmin/master.zip -d /var/www/share/phpmyadmin
-RUN mv /var/www/share/phpmyadmin/phpmyadmin-master /var/www/share/phpmyadmin/htdocs
+RUN wget -P /var/www/share/phpmyadmin https://github.com/phpmyadmin/phpmyadmin/archive/STABLE.zip
+RUN unzip /var/www/share/phpmyadmin/STABLE.zip -d /var/www/share/phpmyadmin
+RUN mv /var/www/share/phpmyadmin/phpmyadmin-STABLE /var/www/share/phpmyadmin/htdocs
 COPY config/phpmyadmin.config.php /var/www/share/phpmyadmin/htdocs/config.inc.php
 RUN mkdir /var/www/share/phpmyadmin/data
 RUN mkdir /var/www/share/phpmyadmin/data/mysql
-RUN rm /var/www/share/phpmyadmin/master.zip
+RUN rm /var/www/share/phpmyadmin/STABLE.zip
 
 ### composer
 RUN curl -sS https://getcomposer.org/installer | php

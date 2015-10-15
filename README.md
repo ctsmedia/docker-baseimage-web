@@ -1,3 +1,8 @@
+[![](https://badge.imagelayers.io/ctsmedia/baseimage-web:latest.svg)](https://imagelayers.io/?images=ctsmedia/baseimage-web:latest 'Get your own badge on imagelayers.io')
+[![](https://img.shields.io/docker/pulls/ctsmedia/baseimage-web.svg?style=flat-square)](https://hub.docker.com/r/ctsmedia/baseimage-web/)
+[![](https://img.shields.io/docker/stars/ctsmedia/baseimage-web.svg?style=flat-square)](https://hub.docker.com/r/ctsmedia/baseimage-web/)
+[![](https://img.shields.io/github/license/ctsmedia/docker-baseimage-web.svg?style=flat-square)](https://github.com/ctsmedia/docker-baseimage-web)
+
 # CTS Base Docker Image
 
 Configurable Base image for web projects. Some highlights are:
@@ -10,22 +15,25 @@ Configurable Base image for web projects. Some highlights are:
  - crons
  - Mail (postfix)
 
- This image is for imitating the usual web server your pages and apps run on.
- It preconfigures a vhost and project sceleton for you with a local domain.
- You can then just deploy your files via SFTP like on your rented web server.
- Perfect for local development and feature branch based environments
+This image is for imitating the usual web server your pages and apps run on.
+It preconfigures a vhost and project sceleton for you with a local domain.
+You can then just deploy your files via SFTP like on your rented web server.
+Perfect for local development and feature branch based environments
 
- To spice it up the image comes with some features for auto deployment and continues integration
+To spice it up the image comes with some features for auto deployment and continues integration
 
- **Do not use for production environments or environments with security playing a role**
- Things like phpmyadmin, mysql etc are not password protected and just setup to get rolling quickly. For environments running on your local development machine this is fine.
+**Do not use for production environments or environments with security playing a role**
+Things like phpmyadmin, mysql etc are not password protected and just setup to get rolling quickly. For environments running on your local development machine this is fine.
 
- **Why using this image?**
- Why not :) We are using docker for some month now at www.cts-media.eu and  did build our own reusable base image.
- This took a lot of hours (=> days) to setup and was only be able to do with the help of many blogs about docker, linux and so on.
- So no reason to keep this private. Maybe it can save you some time or give you some ideas for your own base image.
+**Why using this image?**
+Why not :) We are using docker for some month now at www.cts-media.eu and  did build our own reusable base image.
+This took a lot of hours (=> days) to setup and was only be able to do with the help of many blogs about docker, linux and so on.
+So no reason to keep this private. Maybe it can save you some time or give you some ideas for your own base image.
 
 Thanks to the [phusion guys](http://phusion.github.io/baseimage-docker/) for providing the ubuntu base image.
+
+**Docker Pullname:** `ctsmedia/baseimage-web`  
+**Find on Docker:** <https://hub.docker.com/r/ctsmedia/baseimage-web/>
 
 
 ## Create the base image
