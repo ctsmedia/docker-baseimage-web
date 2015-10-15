@@ -35,8 +35,8 @@ RUN apt-get -qqy install apache2
 
 ### phpbrew
 RUN apt-get build-dep -y php5
-RUN apt-get install -y php5 php5-cgi libapache2-mod-fcgid php5-dev php-pear autoconf automake curl build-essential libxslt1-dev re2c libxml2 libxml2-dev php5-cli bison libbz2-dev libreadline-dev
-RUN apt-get install -y libfreetype6 libfreetype6-dev libpng12-0 libpng12-dev libjpeg-dev libjpeg8-dev libjpeg8  libgd-dev libgd3 libxpm4 libltdl7 libltdl-dev
+RUN apt-get install -y php5 php5-cgi php5-dev php5-cli libapache2-mod-fcgid  php-pear autoconf automake build-essential libxslt1-dev re2c libxml2 libxml2-dev bison libbz2-dev libreadline-dev
+RUN apt-get install -y libfreetype6 libfreetype6-dev libpng12-0 libpng12-dev libjpeg-dev libjpeg8-dev libjpeg8 libgd-dev libgd3 libxpm4 libltdl7 libltdl-dev
 RUN apt-get install -y libssl-dev openssl
 RUN apt-get install -y gettext libgettextpo-dev libgettextpo0
 RUN apt-get install -y libicu-dev
