@@ -2,10 +2,13 @@
 
 source /root/.phpbrew/bashrc
 
+echo "*** Setting Prefix"
+phpbrew lookup-prefix ubuntu
+
 PHP_VERSION="${1}"
 echo "*** Installing PHP Version ${PHP_VERSION}"
 
-phpbrew install ${PHP_VERSION} +default +dbs +gd +cgi +cli +iconv +mb +phar +xml_all +xmlrpc +zip +zlib +soap +curl
+phpbrew install ${PHP_VERSION} +default +dbs +cgi +cli +iconv +mb +phar +xml_all +xmlrpc +zip +zlib +soap +curl -- --with-libdir=lib/x86_64-linux-gnu  --with-gd=shared  --enable-gd-natf --with-jpeg-dir=/usr --with-png-dir=/usr
 PHP_VERSION=$(phpbrew list | grep -oe "$PHP_VERSION[\.0-9]*")
 
 echo "*** PHP Version ${PHP_VERSION} installed"
@@ -14,6 +17,9 @@ echo "*** PHP Version ${PHP_VERSION} installed"
 echo "*** Switching now to ${PHP_VERSION}: phpbrew switch php-${PHP_VERSION}"
 phpbrew switch php-${PHP_VERSION}
 phpbrew list
+
+echo "*** enable gd lib"
+phpbrew ext install gd
 
 echo "*** copying cts php inis"
 mkdir -p ${PHPBREW_ROOT}/php/php-${PHP_VERSION}/var/db/

@@ -42,7 +42,7 @@ This base image is not an abstract one but does nothing (because it's an baseima
 `docker pull ctsmedia/baseimage-web`  
 `docker run -d ctsmedia/baseimage-web`  
 To get some info on what it's doing, start it not detached  
-`docker run -d ctsmedia/baseimage-web`  
+`docker run ctsmedia/baseimage-web`  
 
 When running the container without the -d option or when connecting via ssh
 your always get a message showing the ip and hostname which you can put into local hosts file

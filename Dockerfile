@@ -18,7 +18,7 @@ RUN rm -f /etc/service/sshd/down
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init"]
 
-RUN apt-get update && apt-get install -y curl wget git zip postfix bsd-mailx
+RUN apt-get -qq update && apt-get install -qqy curl wget git zip postfix bsd-mailx
 
 ################################################################################
 # CTS build instructions
@@ -34,15 +34,15 @@ RUN cat /tmp/bash_additions >> ~/.bashrc
 RUN apt-get -qqy install apache2
 
 ### phpbrew
-RUN apt-get build-dep -y php5
-RUN apt-get install -y php5 php5-cgi php5-dev php5-cli libapache2-mod-fcgid  php-pear autoconf automake build-essential libxslt1-dev re2c libxml2 libxml2-dev bison libbz2-dev libreadline-dev
-RUN apt-get install -y libfreetype6 libfreetype6-dev libpng12-0 libpng12-dev libjpeg-dev libjpeg8-dev libjpeg8 libgd-dev libgd3 libxpm4 libltdl7 libltdl-dev
-RUN apt-get install -y libssl-dev openssl
-RUN apt-get install -y gettext libgettextpo-dev libgettextpo0
-RUN apt-get install -y libicu-dev
-RUN apt-get install -y libmhash-dev libmhash2
-RUN apt-get install -y libmcrypt-dev libmcrypt4
-RUN apt-get install -y libmagickwand-dev libmagickcore-dev
+RUN apt-get build-dep -qqy php5
+RUN apt-get install -qqy php5 php5-cgi php5-dev php5-cli libapache2-mod-fcgid  php-pear autoconf automake build-essential libxslt1-dev re2c libxml2 libxml2-dev bison libbz2-dev libreadline-dev
+RUN apt-get install -qqy libfreetype6 libfreetype6-dev libpng12-0 libpng12-dev libjpeg-dev libjpeg8-dev libjpeg8 libgd-dev libgd3 libxpm4 libltdl7 libltdl-dev
+RUN apt-get install -qqy libssl-dev openssl
+RUN apt-get install -qqy gettext libgettextpo-dev libgettextpo0
+RUN apt-get install -qqy libicu-dev
+RUN apt-get install -qqy libmhash-dev libmhash2
+RUN apt-get install -qqy libmcrypt-dev libmcrypt4
+RUN apt-get install -qqy libmagickwand-dev libmagickcore-dev
 
 RUN curl -L -O https://github.com/phpbrew/phpbrew/raw/master/phpbrew
 RUN chmod +x phpbrew
@@ -50,7 +50,6 @@ RUN mv phpbrew /usr/bin/phpbrew
 RUN phpbrew init
 RUN echo "export PHPBREW_ROOT=/opt/phpbrew" >> ${HOME}/.phpbrew/init
 RUN echo "source ${HOME}/.phpbrew/bashrc" >> ${HOME}/.bashrc
-RUN phpbrew lookup-prefix ubuntu
 
 ADD scripts/install_php /usr/bin/install_php
 ADD config/php-cgi.conf /var/www/php-cgi.conf
@@ -59,7 +58,7 @@ RUN chmod +x /usr/bin/install_php
 
 
 ## mysql
-RUN apt-get install -y mysql-server mysql-client php5-mysql
+RUN apt-get install -qqy mysql-server mysql-client php5-mysql
 
 ### Setup Apache / webserver (non project specific)
 RUN mkdir /var/www/share
@@ -103,11 +102,6 @@ ADD scripts/init.sh /etc/my_init.d/01_init.sh
 
 ### Open Ports
 EXPOSE 80 443
-
-### Install Daemons
-
-RUN mkdir /etc/service/mysql
-ADD daemons/mysql.sh /etc/service/mysql/run
 
 #RUN mkdir /etc/service/apache2
 #ADD daemons/apache2.sh /etc/service/apache2/run
