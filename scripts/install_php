@@ -5,15 +5,15 @@ source /root/.phpbrew/bashrc
 PHP_VERSION="${1}"
 echo "*** Installing PHP Version ${PHP_VERSION}"
 
-phpbrew install ${PHP_VERSION} +default +dbs +gd +cgi +cli +iconv +mb +phar +xml_all +xmlrpc +zip +zlib +soap
+phpbrew install ${PHP_VERSION} +default +dbs +gd +cgi +cli +iconv +mb +phar +xml_all +xmlrpc +zip +zlib +soap +curl
 PHP_VERSION=$(phpbrew list | grep -oe "$PHP_VERSION[\.0-9]*")
 
 echo "*** PHP Version ${PHP_VERSION} installed"
-echo "*** Cleaning build: phpbrew clean php-${PHP_VERSION}"
-phpbrew clean php-${PHP_VERSION}
+
 
 echo "*** Switching now to ${PHP_VERSION}: phpbrew switch php-${PHP_VERSION}"
-phpbrew switch "php-${PHP_VERSION}"
+phpbrew switch php-${PHP_VERSION}
+phpbrew list
 
 echo "*** copying cts php inis"
 mkdir -p ${PHPBREW_ROOT}/php/php-${PHP_VERSION}/var/db/
