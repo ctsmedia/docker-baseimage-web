@@ -71,6 +71,7 @@ RUN a2ensite 000-default.conf
 RUN a2enmod rewrite
 RUN a2enmod ssl
 RUN a2enmod fcgid
+RUN a2enmod headers
 
 ### custim php ini
 ADD config/php-cts.ini /etc/php5/cgi/conf.d/cts-default.ini
