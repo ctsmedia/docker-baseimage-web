@@ -1,9 +1,16 @@
 #!/bin/sh
+
+set -e
+
 echo "***********************************"
 printf "*** prepare project script\n"
 echo    "---------------------------------------------------"
 printf "| $(hostname -i) $DOCKER_DOMAIN                      | \n"
 echo     "---------------------------------------------------"
+
+# Make sure on run and start we are in the same dir
+cd /var/www/share
+
 if [ ! -e "project-initialized.flag" ]
 then
 
@@ -25,7 +32,7 @@ then
 
 
   printf "*** creating project initialized flag\n"
-  touch project-initialized.flag
+  touch /var/www/share/project-initialized.flag
 else
   printf "*** initialized flag found. Nothing to be done here\n"
 fi
