@@ -7,6 +7,7 @@ MAINTAINER ctsmedia <info@cts-media.eu>
 
 ENV DOCKER_DOMAIN dev.ctsmedia.local
 ENV HOME /root
+ENV COMPOSER_HOME /var/www/composer
 ENV DEBIAN_FRONTEND noninteractive
 
 ################################################################################
@@ -89,6 +90,9 @@ RUN rm /var/www/share/phpmyadmin/STABLE.zip
 ### composer
 RUN curl -sS https://getcomposer.org/installer | php
 RUN mv composer.phar /usr/local/bin/composer
+RUN mkdir -p /var/www/composer
+#### Install the symfony dump file globally
+RUN composer global require symfony/var-dumper
 
 ### phing
 RUN wget http://www.phing.info/get/phing-latest.phar
