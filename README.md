@@ -15,6 +15,8 @@ Configurable Base image for web projects. Some highlights are:
  - crons
  - Mail (postfix)
 
+ Current Version: **2.4.0**
+
 This image is for imitating the usual web server your pages and apps run on.
 It preconfigures a vhost and project sceleton for you with a local domain.
 You can then just deploy your files via SFTP like on your rented web server.
@@ -278,7 +280,7 @@ RUN postmap /etc/postfix/transport
 
 Our projects Dockerfile than inherit the company one and look like this:
 ```
-FROM ctsmedia/baseimage-web-intern:1.0.0
+FROM ctsmedia/baseimage-web:2.4.0
 ENV DOCKER_DOMAIN magentoshop.local
 
 # Maxcluster Server run max. 5.4 atm
