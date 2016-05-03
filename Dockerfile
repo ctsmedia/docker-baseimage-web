@@ -58,8 +58,8 @@ RUN chmod +x /var/www/php-cgi.conf
 RUN chmod +x /usr/bin/install_php
 
 
-## mysql
-RUN apt-get install -qqy mysql-server mysql-client php5-mysql
+## mysql / sqlite
+RUN apt-get install -qqy mysql-server mysql-client sqlite php5-mysql php5-sqlite
 
 ### Setup Apache / webserver (non project specific)
 RUN mkdir /var/www/share
