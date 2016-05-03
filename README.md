@@ -15,7 +15,7 @@ Configurable Base image for web projects. Some highlights are:
  - crons
  - Mail (postfix)
 
- Current Version: **2.4.0**
+Current Version: **2.4.0**
 
 This image is for imitating the usual web server your pages and apps run on.
 It preconfigures a vhost and project sceleton for you with a local domain.
