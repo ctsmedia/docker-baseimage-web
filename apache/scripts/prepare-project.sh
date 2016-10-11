@@ -16,12 +16,13 @@ then
 
   ### create project dir
   printf "*** creating project structure for domain ${DOCKER_DOMAIN} \n"
-  mkdir -p /var/www/share/${DOCKER_DOMAIN}/htdocs
-  mkdir -p /var/www/share/${DOCKER_DOMAIN}/repos
-  mv /var/www/share/info.php /var/www/share/${DOCKER_DOMAIN}/htdocs/
+  mkdir -p /var/www/share/project/${DOCROOT}
+  mv /var/www/share/info.php /var/www/share/project/${DOCROOT}/
 
   printf "*** setting vhost\n"
   sed -i s/DOCKER_DOMAIN/${DOCKER_DOMAIN}/g /etc/apache2/sites-available/000-default.conf
+  sed -i s/DOCROOT/${DOCROOT}/g /etc/apache2/sites-available/000-default.conf
+  sed -i s/PHPFPM_HOST/${PHPFPM_HOST}/g /etc/apache2/sites-available/000-default.conf
 
   ### create cert
   printf "*** creating ssl cert\n"
@@ -29,7 +30,6 @@ then
     -keyout /etc/apache2/certs/${DOCKER_DOMAIN}.local.key \
     -out /etc/apache2/certs/${DOCKER_DOMAIN}.cert.pem -days 1240 -nodes \
     -subj "/C=DE/ST=NRW/L=COLOGNE/O=CTS GmbH/OU=IT/CN=${DOCKER_DOMAIN}"
-
 
   printf "*** creating project initialized flag\n"
   touch /var/www/share/project-initialized.flag

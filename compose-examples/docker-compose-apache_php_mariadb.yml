@@ -1,0 +1,35 @@
+version: '2'
+services:
+  project:
+    image: ctsmedia/baseimage-web-apache:1.0.0
+    container_name: &hostname myproject.ctsmedia.local
+    environment:
+      DOCKER_DOMAIN: *hostname
+      PROJECT_NAME: &project myproject
+      PHPFPM_HOST: &phpfpm_host myproject_php
+      DOCROOT: web
+    volumes:
+      - ".:/var/www/share/project"
+    depends_on:
+      - db
+      - php
+    links:
+      - db
+      - php
+    ports:
+        - "80:80"
+  php:
+    image: php:7.0-fpm
+    container_name: *phpfpm_host
+    ports:
+      - "9000"
+    volumes:
+      - ".:/var/www/share/project"
+  db:
+    image: mariadb:10.1
+    container_name: myproject_db
+    environment:
+      MYSQL_ROOT_PASSWORD: ctsmedia
+      MYSQL_DATABASE: *project
+      MYSQL_USER: *project
+      MYSQL_PASSWORD: *project

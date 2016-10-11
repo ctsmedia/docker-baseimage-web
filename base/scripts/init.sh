@@ -23,10 +23,6 @@ else
 fi
 printf "All done\n"
 
-printf    "Starting Apache\n"
-service apache2 start
-printf    "Starting Apache\n"
-service mysql start
 printf    "Starting Postfix (Mail)\n"
 service postfix start
 
