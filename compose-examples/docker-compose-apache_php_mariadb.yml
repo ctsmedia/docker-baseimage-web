@@ -1,33 +1,36 @@
+################################################################################
+# Example Web application
+# running Apache 2, php 7 FPM and mariadb all linked together anbd ready 2 use
+################################################################################
 version: '2'
 services:
-  project:
+  web:
     image: ctsmedia/baseimage-web-apache:1.0.0
+    # change myproject or the complete domain to you likings
     container_name: &hostname myproject.ctsmedia.local
     environment:
       DOCKER_DOMAIN: *hostname
+      # change the projectname to your likings
       PROJECT_NAME: &project myproject
-      PHPFPM_HOST: &phpfpm_host myproject_php
+      PHPFPM_HOST: &phpfpm_host php
       DOCROOT: web
     volumes:
       - ".:/var/www/share/project"
     depends_on:
       - db
       - php
-    links:
-      - db
-      - php
     ports:
-        - "80:80"
+        - "80"
   php:
+    # change to php:5.6-fpm or php:7.1-fpm to run another php version
     image: php:7.0-fpm
-    container_name: *phpfpm_host
     ports:
       - "9000"
     volumes:
       - ".:/var/www/share/project"
   db:
+    # you can also use mysql:5.6 for example
     image: mariadb:10.1
-    container_name: myproject_db
     environment:
       MYSQL_ROOT_PASSWORD: ctsmedia
       MYSQL_DATABASE: *project
