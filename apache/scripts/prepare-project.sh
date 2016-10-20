@@ -21,7 +21,7 @@ then
 
   printf "*** setting vhost\n"
   sed -i s/DOCKER_DOMAIN/${DOCKER_DOMAIN}/g /etc/apache2/sites-available/000-default.conf
-  sed -i s/DOCROOT/${DOCROOT}/g /etc/apache2/sites-available/000-default.conf
+  sed -i "s|DOCROOT|${DOCROOT}|g" /etc/apache2/sites-available/000-default.conf
   sed -i s/PHPFPM_HOST/${PHPFPM_HOST}/g /etc/apache2/sites-available/000-default.conf
 
   ### create cert
