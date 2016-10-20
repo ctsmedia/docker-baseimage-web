@@ -32,7 +32,8 @@ COPY scripts/bash_additions /tmp/bash_additions
 RUN cat /tmp/bash_additions >> ~/.bashrc
 
 ### php7
-RUN apt-get install -qqy php-cli
+### we install php cli for composer and xml because it's needed often in cli tasks
+RUN apt-get install -qqy php-cli php-xml
 
 ## sqlite, other db services like maria db or mysql should be used via container
 RUN apt-get install -qqy sqlite

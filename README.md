@@ -28,6 +28,18 @@ An apache container ready to run your project via php fpm
 
 Coming soon
 
+### php Container
+We offer a php fpm container with some of required php extensions in projects for contao, drupal, symfony and magento and also for debugging with xdebug. Use:
+```
+image: ctsmedia/baseimage-web-php:7.0-fpm
+```
+instead of
+```
+image: php:7.0-fpm
+```
+in the php section of you docker-compose file
+
+
 ### Compose Examples
 
 See the [compose-examples](compose-examples) dir for some examples getting you started within minutes.
