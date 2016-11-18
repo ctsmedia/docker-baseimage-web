@@ -1,4 +1,4 @@
-# Name ctsmedia/baseimage-web-abstract
+# Name ctsmedia/baseimage-web-abstract:1.1.0
 FROM phusion/baseimage:0.9.19
 MAINTAINER ctsmedia <info@cts-media.eu>
 
@@ -38,19 +38,13 @@ RUN apt-get install -qqy php-cli php-xml
 ## sqlite, other db services like maria db or mysql should be used via container
 RUN apt-get install -qqy sqlite
 
+## install a mysql-client
+RUN apt-get install -qqy mysql-client
+
 ### Setup webserver (non project specific)
 RUN mkdir -p /var/www/share/project
 RUN mkdir /var/www/share/phpmyadmin
 COPY scripts/phpinfo.php /var/www/share/info.php
-
-### phpmyadmin
-RUN wget  -qP /var/www/share/phpmyadmin https://github.com/phpmyadmin/phpmyadmin/archive/STABLE.zip
-RUN unzip -q /var/www/share/phpmyadmin/STABLE.zip -d /var/www/share/phpmyadmin
-RUN mv /var/www/share/phpmyadmin/phpmyadmin-STABLE /var/www/share/phpmyadmin/htdocs
-COPY config/phpmyadmin.config.php /var/www/share/phpmyadmin/htdocs/config.inc.php
-RUN mkdir /var/www/share/phpmyadmin/data
-RUN mkdir /var/www/share/phpmyadmin/data/mysql
-RUN rm /var/www/share/phpmyadmin/STABLE.zip
 
 ### composer
 RUN curl -sS https://getcomposer.org/installer | php
