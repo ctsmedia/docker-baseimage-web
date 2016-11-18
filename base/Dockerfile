@@ -43,7 +43,6 @@ RUN apt-get install -qqy mysql-client
 
 ### Setup webserver (non project specific)
 RUN mkdir -p /var/www/share/project
-RUN mkdir /var/www/share/phpmyadmin
 COPY scripts/phpinfo.php /var/www/share/info.php
 
 ### composer
@@ -57,6 +56,7 @@ RUN composer global require symfony/var-dumper
 ### Init Project Skeleton
 RUN mkdir -p /etc/my_init.d
 ADD scripts/init.sh /etc/my_init.d/01_init.sh
+RUN chmod +x /etc/my_init.d/01_init.sh
 
 ### Open Ports
 EXPOSE 80 443

@@ -5,7 +5,7 @@
 version: '2'
 services:
   web:
-    image: ctsmedia/baseimage-web-apache:1.0.0
+    image: ctsmedia/baseimage-web-apache:1.1.0
     # change myproject or the complete domain to you likings
     container_name: &hostname myproject.ctsmedia.local
     environment:

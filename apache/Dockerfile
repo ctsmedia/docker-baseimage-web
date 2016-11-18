@@ -17,5 +17,7 @@ RUN a2enmod headers
 
 ### Init Project Skeleton
 ADD scripts/prepare-project.sh /etc/my_init.d/00_prepare-project.sh
+RUN chmod +x /etc/my_init.d/00_prepare-project.sh
 ### Init Container
 ADD scripts/init.sh /etc/my_init.d/02_init.sh
+RUN chmod +x /etc/my_init.d/02_init.sh

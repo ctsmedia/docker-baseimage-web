@@ -16,7 +16,7 @@ your daily web work
 
  - Composer
  - php CLI
- - phpMyAdmin
+ - mysql-client
  - crons
  - Mail (postfix)
 

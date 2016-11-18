@@ -2,8 +2,6 @@ ServerName DOCKER_DOMAIN
 <VirtualHost *:80>
         ServerName DOCKER_DOMAIN
 
-        Alias /phpmyadmin /var/www/share/phpmyadmin/htdocs
-
         SetEnv MAGE_IS_DEVELOPER_MODE "true"
 
         ServerAdmin docker@DOCKER_DOMAIN
@@ -24,8 +22,6 @@ ServerName DOCKER_DOMAIN
 </VirtualHost>
 <VirtualHost *:443>
         ServerName DOCKER_DOMAIN
-
-        Alias /phpmyadmin /var/www/share/phpmyadmin/htdocs
 
         SetEnv MAGE_IS_DEVELOPER_MODE "true"
 
