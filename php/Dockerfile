@@ -1,7 +1,8 @@
 # Name ctsmedia/baseimage-web-php
 # Change version to create differen tags like for php5
 # FROM php:5.6-fpm
-FROM php:7.0-fpm
+# FROM php:7.0-fpm
+FROM php:7.1-fpm
 
 MAINTAINER ctsmedia <info@cts-media.eu>
 
