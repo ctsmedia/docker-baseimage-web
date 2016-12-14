@@ -15,9 +15,9 @@ if [ ! -e "project-initialized.flag" ]
 then
 
   ### create project dir
-  printf "*** creating project structure for domain ${DOCKER_DOMAIN} \n"
-  mkdir -p /var/www/share/project/${DOCROOT}
-  mv /var/www/share/info.php /var/www/share/project/${DOCROOT}/
+  #printf "*** creating NOT project structure for domain ${DOCKER_DOMAIN} \n"
+  #mkdir -p /var/www/share/project/${DOCROOT}
+  #mv /var/www/share/info.php /var/www/share/project/${DOCROOT}/
 
   printf "*** setting vhost\n"
   sed -i s/DOCKER_DOMAIN/${DOCKER_DOMAIN}/g /etc/apache2/sites-available/000-default.conf

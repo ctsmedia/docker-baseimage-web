@@ -1,5 +1,5 @@
-# Name ctsmedia/baseimage-web-apache:1.1.0
-FROM ctsmedia/baseimage-web-abstract:1.1.0
+# Name ctsmedia/baseimage-web-apache:1.1.1
+FROM ctsmedia/baseimage-web-abstract:1.1.1
 MAINTAINER ctsmedia <info@cts-media.eu>
 
 ### LAMP Setup

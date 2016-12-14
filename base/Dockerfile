@@ -42,7 +42,6 @@ RUN apt-get install -qqy sqlite
 RUN apt-get install -qqy mysql-client
 
 ### Setup webserver (non project specific)
-RUN mkdir -p /var/www/share/project
 COPY scripts/phpinfo.php /var/www/share/info.php
 
 ### composer
