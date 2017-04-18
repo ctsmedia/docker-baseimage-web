@@ -1,5 +1,5 @@
-# Name ctsmedia/baseimage-web-abstract:1.1.0
-FROM phusion/baseimage:0.9.19
+# Name ctsmedia/baseimage-web-abstract:2.0.0
+FROM phusion/baseimage:0.9.21
 MAINTAINER ctsmedia <info@cts-media.eu>
 
 ################################################################################
@@ -11,7 +11,6 @@ ENV PHPFPM_HOST php7fpm
 ENV DOCROOT htdocs
 
 ENV HOME /root
-ENV COMPOSER_HOME /var/www/composer
 ENV DEBIAN_FRONTEND noninteractive
 
 ################################################################################
@@ -31,10 +30,6 @@ RUN apt-get -qq update && apt-get install -qqy curl wget git zip postfix bsd-mai
 COPY scripts/bash_additions /tmp/bash_additions
 RUN cat /tmp/bash_additions >> ~/.bashrc
 
-### php7
-### we install php cli for composer and xml because it's needed often in cli tasks
-RUN apt-get install -qqy php-cli php-xml
-
 ## sqlite, other db services like maria db or mysql should be used via container
 RUN apt-get install -qqy sqlite
 
@@ -44,18 +39,14 @@ RUN apt-get install -qqy mysql-client
 ### Setup webserver (non project specific)
 COPY scripts/phpinfo.php /var/www/share/info.php
 
-### composer
-RUN curl -sS https://getcomposer.org/installer | php
-RUN mv composer.phar /usr/local/bin/composer
-RUN mkdir -p /var/www/composer
-
-#### Install the symfony dump file globally
-RUN composer global require symfony/var-dumper
-
 ### Init Project Skeleton
 RUN mkdir -p /etc/my_init.d
 ADD scripts/init.sh /etc/my_init.d/01_init.sh
 RUN chmod +x /etc/my_init.d/01_init.sh
+
+# composer fallback
+COPY scripts/composer.sh /usr/local/bin/composer
+RUN chmod +x /usr/local/bin/composer
 
 ### Open Ports
 EXPOSE 80 443
