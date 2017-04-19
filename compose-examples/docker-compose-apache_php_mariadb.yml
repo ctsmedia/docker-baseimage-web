@@ -1,0 +1,39 @@
+################################################################################
+# Example Web application
+# running Apache 2, php 7.1 FPM and mariadb all linked together anbd ready 2 use
+################################################################################
+version: '2'
+services:
+  web:
+    image: ctsmedia/baseimage-web-apache:1.2.0
+    # change myproject or the complete domain to you likings
+    container_name: &hostname myproject.ctsmedia.local
+    environment:
+      DOCKER_DOMAIN: *hostname
+      # change the projectname to your likings
+      PROJECT_NAME: &project myproject
+      PHPFPM_HOST: &phpfpm_host php
+      # path to the doc root folder relative to the mount bind. leave empty if they are the same
+      DOCROOT: web
+    volumes_from:
+      - php
+    depends_on:
+      - db
+      - php
+    ports:
+        - "80"
+  php:
+    # change to :5.6-fpm or :7.1-fpm tag to run another php version
+    image: ctsmedia/baseimage-web-php:7.1-fpm
+    ports:
+      - "9000"
+    volumes:
+      - ".:/var/www/share/project"
+  db:
+    # you can also use mysql:5.6 for example
+    image: mariadb:10.1
+    environment:
+      MYSQL_ROOT_PASSWORD: ctsmedia
+      MYSQL_DATABASE: *project
+      MYSQL_USER: *project
+      MYSQL_PASSWORD: *project

@@ -2,23 +2,14 @@ ServerName DOCKER_DOMAIN
 <VirtualHost *:80>
         ServerName DOCKER_DOMAIN
 
-        Alias /phpmyadmin /var/www/share/phpmyadmin/htdocs
-
-        FcgidBusyTimeout 600
-        FcgidMaxRequestLen 52428800
-        IPCCommTimeout 600
-
-
         SetEnv MAGE_IS_DEVELOPER_MODE "true"
 
         ServerAdmin docker@DOCKER_DOMAIN
-        DocumentRoot /var/www/share/DOCKER_DOMAIN/htdocs/
+        DocumentRoot /var/www/share/project/DOCROOT/
+
+        ProxyPassMatch ^/(.*\.php(/.*)?)$ fcgi://PHPFPM_HOST:9000/var/www/share/project/DOCROOT/$1
 
         <Directory /var/www/share>
-            FCGIWrapper /var/www/php-cgi.conf
-            <FilesMatch \.php$>
-                        SetHandler fcgid-script
-            </FilesMatch>
             Options +FollowSymLinks +ExecCGI
                 AllowOverride All
                 Order allow,deny
@@ -32,26 +23,18 @@ ServerName DOCKER_DOMAIN
 <VirtualHost *:443>
         ServerName DOCKER_DOMAIN
 
-        Alias /phpmyadmin /var/www/share/phpmyadmin/htdocs
-
-        FcgidBusyTimeout 600
-        FcgidMaxRequestLen 52428800
-        IPCCommTimeout 600
-
         SetEnv MAGE_IS_DEVELOPER_MODE "true"
 
         ServerAdmin docker@DOCKER_DOMAIN
-        DocumentRoot /var/www/share/DOCKER_DOMAIN/htdocs/
+        DocumentRoot /var/www/share/project/DOCROOT/
+
+        ProxyPassMatch ^/(.*\.php(/.*)?)$ fcgi://PHPFPM_HOST:9000/var/www/share/project/DOCROOT/$1
 
         SSLEngine on
         SSLCertificateFile    /etc/apache2/certs/DOCKER_DOMAIN.cert.pem
         SSLCertificateKeyFile /etc/apache2/certs/DOCKER_DOMAIN.local.key
 
         <Directory /var/www/share>
-            FCGIWrapper /var/www/php-cgi.conf
-            <FilesMatch \.php$>
-                        SetHandler fcgid-script
-            </FilesMatch>
             Options +FollowSymLinks +ExecCGI
                 AllowOverride All
                 Order allow,deny
