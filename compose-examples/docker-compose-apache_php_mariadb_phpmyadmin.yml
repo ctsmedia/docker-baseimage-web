@@ -5,7 +5,7 @@
 version: '2'
 services:
   web:
-    image: ctsmedia/baseimage-web-apache:1.2.0
+    image: ctsmedia/baseimage-web-apache:1.1.0
     # change myproject or the complete domain to you likings
     container_name: &hostname myproject.ctsmedia.local
     environment:
@@ -21,10 +21,9 @@ services:
       - db
       - php
     ports:
-        - "80"
+        - "80:80"
   php:
-    # change to :5.6-fpm or :7.1-fpm tag to run another php version
-    image: ctsmedia/baseimage-web-php:7.1-fpm
+    image: php:7.1-fpm
     ports:
       - "9000"
     volumes:
@@ -37,3 +36,9 @@ services:
       MYSQL_DATABASE: *project
       MYSQL_USER: *project
       MYSQL_PASSWORD: *project
+  phpmyadmin:
+      image: phpmyadmin/phpmyadmin
+      depends_on:
+        - db
+      ports:
+       - "8080:80"
