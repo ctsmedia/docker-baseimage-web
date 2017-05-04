@@ -32,10 +32,11 @@ RUN chmod +x composer.phar
 RUN mv composer.phar /usr/local/bin/composer
 RUN mkdir -p /var/www/composer
 # composer may not get run as root, so the home needs to be writable for all
-RUN chmod 777 /var/www/composer
+RUN chmod -R 777 /var/www/composer
 
 #### Install the symfony dump file globally
 RUN composer global require symfony/var-dumper
+RUN chmod -R 777 /var/www/composer
 
 
 
