@@ -1,7 +1,7 @@
 # Name ctsmedia/baseimage-web-php
 # Change version to create differen tags like for php5
-# FROM php:5.6-fpm
-# FROM php:7.0-fpm
+#FROM php:5.6-fpm
+#FROM php:7.0-fpm
 FROM php:7.1-fpm
 
 MAINTAINER ctsmedia <info@cts-media.eu>
@@ -31,6 +31,8 @@ RUN curl -sS https://getcomposer.org/download/1.4.1/composer.phar > composer.pha
 RUN chmod +x composer.phar
 RUN mv composer.phar /usr/local/bin/composer
 RUN mkdir -p /var/www/composer
+# composer may not get run as root, so the home needs to be writable for all
+RUN chmod +rw /var/www/composer
 
 #### Install the symfony dump file globally
 RUN composer global require symfony/var-dumper
