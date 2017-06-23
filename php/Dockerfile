@@ -21,8 +21,9 @@ RUN apt-get update && apt-get install -y \
 
 RUN docker-php-ext-install xml
 RUN docker-php-ext-configure intl && docker-php-ext-install intl
-RUN pecl install xdebug \
-    && echo 'zend_extension = /usr/local/lib/php/extensions/no-debug-non-zts-20151012/xdebug.so' >> /usr/local/etc/php/php.ini
+RUN pecl install redis \
+    && pecl install xdebug \
+    && docker-php-ext-enable redis xdebug
 RUN docker-php-ext-install pdo_mysql
 
 ### composer 1.4.1
