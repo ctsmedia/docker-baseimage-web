@@ -25,6 +25,7 @@ RUN pecl install redis \
     && pecl install xdebug \
     && docker-php-ext-enable redis xdebug
 RUN docker-php-ext-install pdo_mysql
+RUN docker-php-ext-install zip
 
 ### composer 1.4.1
 RUN apt-get -qq update && apt-get install -qqy curl wget zip
