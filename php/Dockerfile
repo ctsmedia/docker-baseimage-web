@@ -3,6 +3,7 @@
 #FROM php:5.6-fpm
 #FROM php:7.0-fpm
 FROM php:7.1-fpm
+#FROM php:7.2-fpm
 
 MAINTAINER ctsmedia <info@cts-media.eu>
 
@@ -11,19 +12,29 @@ ENV COMPOSER_HOME /var/www/composer
 RUN apt-get update && apt-get install -y \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
-        libmcrypt-dev \
-        libpng12-dev \
+        libpng-dev \
         libxml2-dev \
         zlib1g-dev libicu-dev g++ \
-    && docker-php-ext-install -j$(nproc) iconv mcrypt \
+    && docker-php-ext-install -j$(nproc) iconv \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install -j$(nproc) gd
+
+# Pre php 7.2
+RUN apt-get update && apt-get install -y \
+        libmcrypt-dev \
+    && docker-php-ext-install -j$(nproc) mcrypt
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug
+
+# >= php 7.2
+#RUN apt-get update && apt-get install -y \
+#        libsodium-dev \
+#    && docker-php-ext-install -j$(nproc) sodium
 
 RUN docker-php-ext-install xml
 RUN docker-php-ext-configure intl && docker-php-ext-install intl
 RUN pecl install redis-3.1.2 \
-    && pecl install xdebug \
-    && docker-php-ext-enable redis xdebug
+    && docker-php-ext-enable redis
 RUN docker-php-ext-install pdo_mysql
 RUN docker-php-ext-install zip
 
@@ -33,9 +44,9 @@ RUN apt-get -qq update && apt-get install -qqy \
 COPY config/bash_additions /tmp/bash_additions
 RUN cat /tmp/bash_additions >> ~/.bashrc
 
-### composer 1.4.1
+### composer 1.5.6
 RUN apt-get -qq update && apt-get install -qqy curl wget zip git
-RUN curl -sS https://getcomposer.org/download/1.4.1/composer.phar > composer.phar
+RUN curl -sS https://getcomposer.org/download/1.5.6/composer.phar > composer.phar
 RUN chmod +x composer.phar
 RUN mv composer.phar /usr/local/bin/composer
 RUN mkdir -p /var/www/composer
