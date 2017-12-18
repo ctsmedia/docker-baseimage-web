@@ -27,19 +27,27 @@ RUN pecl install redis-3.1.2 \
 RUN docker-php-ext-install pdo_mysql
 RUN docker-php-ext-install zip
 
+### tools
+RUN apt-get -qq update && apt-get install -qqy \
+        vim
+COPY config/bash_additions /tmp/bash_additions
+RUN cat /tmp/bash_additions >> ~/.bashrc
+
 ### composer 1.4.1
-RUN apt-get -qq update && apt-get install -qqy curl wget zip
+RUN apt-get -qq update && apt-get install -qqy curl wget zip git
 RUN curl -sS https://getcomposer.org/download/1.4.1/composer.phar > composer.phar
 RUN chmod +x composer.phar
 RUN mv composer.phar /usr/local/bin/composer
 RUN mkdir -p /var/www/composer
-# composer may not get run as root, so the home needs to be writable for all
+### composer may not get run as root, so the home needs to be writable for all
 RUN chmod -R 777 /var/www/composer
 
-#### Install the symfony dump file globally
+### Install the symfony dump file globally
 RUN composer global require symfony/var-dumper
 RUN chmod -R 777 /var/www/composer
 
-
-
+### Add prepared php ini
 ADD config/php-cts.ini /usr/local/etc/php/conf.d/cts-default.ini
+
+### Set Entrypoint
+WORKDIR /var/www/share/project
