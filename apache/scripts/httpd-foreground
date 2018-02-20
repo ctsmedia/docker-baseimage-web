@@ -1,0 +1,25 @@
+#!/bin/sh
+set -e
+
+# Apache gets grumpy about PID files pre-existing
+rm -f /usr/local/apache2/logs/httpd.pid
+
+# Prepare Variables for apache php fpm config
+# Set Document root depending on php fpm config
+# this cannot be done in httpd conf because apache sucks. see also http://blog.jasonantman.com/2013/05/environment-variable-substitution-in-apache-httpd-configs/
+# if directives do not work with osnenv expression function
+if [ -n "${PHPFPM_PUBLIC_FOLDER}" ]
+    then
+        export DOCUMENT_ROOT="${PHPFPM_PATH}/${PHPFPM_PUBLIC_FOLDER}"
+    else
+        export DOCUMENT_ROOT="${PHPFPM_PATH}"
+fi
+
+# Set the php fpm host
+if [ -z "${PHPFPM_HOST}" ]
+    then
+        export PHPFPM_HOST="php"
+fi
+
+# Start apache now
+exec httpd -DFOREGROUND

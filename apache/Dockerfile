@@ -6,6 +6,11 @@ MAINTAINER ctsmedia <info@cts-media.eu>
 COPY config/httpd-php.conf /usr/local/apache2/conf/httpd-php.conf
 RUN chown root:www-data /usr/local/apache2/conf/httpd-php.conf
 RUN echo "Include conf/httpd-php.conf" >> /usr/local/apache2/conf/httpd.conf
+COPY scripts/httpd-foreground /usr/local/bin/
+
+ENV PHPFPM_HOST="php"
+ENV PHPFPM_PATH="/var/www/share/project"
+ENV PHPFPM_PUBLIC_FOLDER=""
 
 ### Create ssl cert
 RUN apt-get update \
