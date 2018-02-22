@@ -1,9 +1,6 @@
-# Name ctsmedia/baseimage-web-php
-# Change version to create differen tags like for php5
-#FROM php:5.6-fpm
-#FROM php:7.0-fpm
-FROM php:7.1-fpm
-#FROM php:7.2-fpm
+# Name ctsmedia/php
+ARG PHP_VERSION
+FROM php:${PHP_VERSION}-fpm
 
 MAINTAINER ctsmedia <info@cts-media.eu>
 
@@ -19,17 +16,45 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install -j$(nproc) gd
 
+# Pre php 7 (xdebug > 2.6 requires php 7)
+RUN set -e; \
+    /bin/bash -c '\
+    if [[ "${PHP_VERSION}" =~ "5." ]]; then \
+        echo "Installing specific php 5 extensions"; \
+        apt-get update && apt-get install -y \
+            libmcrypt-dev \
+        && docker-php-ext-install -j$(nproc) mcrypt \
+        && pecl install xdebug-2.5.0 \
+        && docker-php-ext-enable xdebug; \
+    fi;\
+    '
 # Pre php 7.2
-RUN apt-get update && apt-get install -y \
-        libmcrypt-dev \
-    && docker-php-ext-install -j$(nproc) mcrypt
-RUN pecl install xdebug \
-    && docker-php-ext-enable xdebug
+RUN set -e; \
+    /bin/bash -c '\
+    if [[ "${PHP_VERSION}" =~ "7.0" || "${PHP_VERSION}" =~ "7.1" ]]; then  \
+        echo "Installing php 7.0 and 7.1 extensions"; \
+        apt-get update && apt-get install -y \
+            libmcrypt-dev \
+        && docker-php-ext-install -j$(nproc) mcrypt \
+        && pecl install xdebug \
+        && docker-php-ext-enable xdebug; \
+    fi;\
+    '
 
-# >= php 7.2
-#RUN apt-get update && apt-get install -y \
-#        libsodium-dev \
-#    && docker-php-ext-install -j$(nproc) sodium
+
+# >= php 7.2 (mcrypt was replaced by sodium)
+RUN set -e; \
+    /bin/bash -c '\
+    if [[ "${PHP_VERSION}" =~ "7." && ! ( "${PHP_VERSION}" =~ "7.1" || "${PHP_VERSION}" =~ "7.0" ) ]]; then  \
+        echo "Installing php 7.2+ extensions"; \
+        apt-get update && apt-get install -y \
+            libsodium-dev \
+        && docker-php-ext-install -j$(nproc) sodium \
+        && pecl install xdebug \
+        && docker-php-ext-enable xdebug; \
+    fi;\
+    '
+
 
 RUN docker-php-ext-install xml
 RUN docker-php-ext-configure intl && docker-php-ext-install intl
@@ -44,9 +69,9 @@ RUN apt-get -qq update && apt-get install -qqy \
 COPY config/bash_additions /tmp/bash_additions
 RUN cat /tmp/bash_additions >> ~/.bashrc
 
-### composer 1.5.6
+### composer 1.6.3
 RUN apt-get -qq update && apt-get install -qqy curl wget zip git
-RUN curl -sS https://getcomposer.org/download/1.5.6/composer.phar > composer.phar
+RUN curl -sS https://getcomposer.org/download/1.6.3/composer.phar > composer.phar
 RUN chmod +x composer.phar
 RUN mv composer.phar /usr/local/bin/composer
 RUN mkdir -p /var/www/composer

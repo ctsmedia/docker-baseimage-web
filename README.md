@@ -1,53 +1,56 @@
 [![](https://img.shields.io/github/license/ctsmedia/docker-baseimage-web.svg?style=flat-square)](https://github.com/ctsmedia/docker-baseimage-web)
 
-# CTS Base Docker Image
+# CTS Docker Web images
 
-Configurable base Docker Setup for web projects.
+Based on the official docker images we did build a setup for easy setting up a local development environment for your php based web projects.  
 
 ## What's inside
 
-### A abstract image you can build on
+### PHP FPM
 
-Based on the great [phusion/baseimage](http://phusion.github.io/baseimage-docker/) with some useful additions for
-your daily web work
+Based on the official php image we added some common things you need in projects based on symfony, magento or contao for example.  
+Comes with some comfort stuff which is often used when works needs to be done inside the container and an optimized php ini for development. 
 
- - Composer
- - php CLI
- - mysql-client
- - crons
- - Mail (postfix)
+- Pre installed and activated extensions: 
+    - iconv
+    - gd
+    - xml
+    - intl
+    - redis
+    - pdo_mysql
+    - zip
+    - mcrypt (sodium for php 7.2)
+    - xdebug
 
-### Apache Container
+- Tools
+    - Vi(m)
+    - git
+    - composer globally installed
+    - globally installed symfony var dumper
 
-An apache container ready to run your project via php fpm
-
-### Nginx Container
-
-Coming soon
-
-### php Container
-We offer a php fpm container with some of required php extensions in projects for contao, drupal, symfony and magento and also for debugging with xdebug. Use:
+In your docker compose file use: 
 ```
-image: ctsmedia/baseimage-web-php:7.0-fpm
+image: ctsmedia/php:7.2-fpm
 ```
 instead of
 ```
-image: php:7.0-fpm
+image: php:7.2-fpm
 ```
-in the php section of you docker-compose file.
 
-It also provides composer and symfony var dumper component globally pre installed 
+### Apache 2.4
 
+- SSL enabled 
+- Zero config for connection to php fpm
+- http2 enabled 
+
+### Nginx Container
+
+Coming soon    
 
 ### Compose Examples
 
 See the [compose-examples](compose-examples) dir for some examples getting you started within minutes.
 Variable compositions of php 7.0, 7.1, 5, apache, mysql or mariadb, phpmyadmin and more.
-
-**Find on Docker:**
-- <https://hub.docker.com/r/ctsmedia/baseimage-web-abstract/>
-- <https://hub.docker.com/r/ctsmedia/baseimage-web-apache/>
-
 
 ## How to setup
 
@@ -55,51 +58,7 @@ Variable compositions of php 7.0, 7.1, 5, apache, mysql or mariadb, phpmyadmin a
 2. Rename it to `docker-compose.yml`
 3. Adjust the compose file to your likings (documentation inside)
 4. Run `docker-compose up -d`
-5. Access the container ip (gets shown in Kitematic output log of web container)
-or set an entry in your hosts file with the configured DOCKER_DOMAIN mapping to the Container IP
-
-## Mailing
-This image comes with postfix installed. On development environments you sometimes work with data from a production systems.
-It's not so cool if customers of an eshop get mails from your docker dev instance by accident.
-
-To only allow mails send to specific whitelisted domains add the following to your docker instance:
-
-```
-### postfix
-RUN echo "smtpd_recipient_restrictions = check_recipient_access hash:/etc/postfix/recipient_domains, reject" >> /etc/postfix/main.cf
-RUN echo "transport_maps = hash:/etc/postfix/transport"  >> /etc/postfix/main.cf
-ADD config/postfix_recipient_domains /etc/postfix/recipient_domains
-ADD config/postfix_transport /etc/postfix/transport
-RUN postmap /etc/postfix/recipient_domains
-RUN postmap /etc/postfix/transport
-```
-
-The config files have to look like this:
-
-`config/postfix_transport`
-```
-cts-media.eu :
-cts-media.com :
-* error: Recipient not whitelisted.
-```
-
-`config/postfix_recipient_domains`
-```
-cts-media.com OK
-cts-media.eu OK
-```
-
-## FAQ
-
-### I cannot access my containers IP via ping or Browser
-Your most likely on Windows. You need to add a route for the created compose network.
-```
-route add  172.17.0.0 MASK 255.255.0.0 10.0.75.2
-```
-The **17** depends on the created network. Take the part from the container ip. If the container ip is `172.22.0.4` for example use
-```
-route add  172.22.0.0 MASK 255.255.0.0 10.0.75.2
-```
+5. Access the http container (in general http://localhost:80 on mac or on linux the container ip http://HTTP_CONTAINER_IP. You use `docker ps` or the program kitematic to find it. )
 
 
 `:wq`

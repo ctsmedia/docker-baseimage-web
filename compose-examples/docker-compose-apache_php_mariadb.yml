@@ -6,7 +6,7 @@ version: '2'
 services:
   php:
     # change to :5.6-fpm or :7.1-fpm tag to run another php version
-    image: ctsmedia/baseimage-web-php:7.1-fpm
+    image: ctsmedia/php:7.1-fpm
     ports:
       - "9000"
     volumes:
