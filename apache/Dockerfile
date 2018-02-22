@@ -4,6 +4,7 @@ MAINTAINER ctsmedia <info@cts-media.eu>
 
 ### setup apache
 COPY config/httpd-php.conf /usr/local/apache2/conf/httpd-php.conf
+COPY config/httpd-php-ssl.conf /usr/local/apache2/conf/extra/httpd-php-ssl.conf
 RUN chown root:www-data /usr/local/apache2/conf/httpd-php.conf
 RUN echo "Include conf/httpd-php.conf" >> /usr/local/apache2/conf/httpd.conf
 COPY scripts/httpd-foreground /usr/local/bin/
