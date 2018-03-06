@@ -9,7 +9,9 @@ Based on the official docker images we did build a setup for easy setting up a l
 ### PHP FPM
 
 Based on the official php image we added some common things you need in projects based on symfony, magento or contao for example.  
-Comes with some comfort stuff which is often used when works needs to be done inside the container and an optimized php ini for development. 
+Comes with some comfort stuff which is often used when works needs to be done inside the container and an optimized php ini for development.
+The container adjusts the www-data user to match your host user id, so you want get permission problems. It reads the user and group id from your volume mount in the container which should be by default: `/var/www/share/project`. 
+If you want to changed that pass the env var: `PROJECT_PATH`. Our docker compose examples work out of the box. 
 
 - Pre installed and activated extensions: 
     - iconv
@@ -27,6 +29,7 @@ Comes with some comfort stuff which is often used when works needs to be done in
     - git
     - composer globally installed
     - globally installed symfony var dumper
+    - gosu
 
 In your docker compose file use: 
 ```
@@ -59,6 +62,11 @@ Variable compositions of php 7.0, 7.1, 5, apache, mysql or mariadb, phpmyadmin a
 3. Adjust the compose file to your likings (documentation inside)
 4. Run `docker-compose up -d`
 5. Access the http container (in general http://localhost:80 on mac or on linux the container ip http://HTTP_CONTAINER_IP. You use `docker ps` or the program kitematic to find it. )
+
+## How to Build custom PHP image
+
+1. Adjust the Dockerfile to your likings
+2. Build the image. Replace the tag and php version `docker build -t ctsmedia/php:7.2 --build-arg PHP_VERSION=7.2 .`
 
 
 `:wq`

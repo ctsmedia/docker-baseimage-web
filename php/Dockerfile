@@ -5,6 +5,8 @@ FROM php:${PHP_VERSION}-fpm
 MAINTAINER ctsmedia <info@cts-media.eu>
 
 ENV COMPOSER_HOME /var/www/composer
+ENV PROJECT_PATH /var/www/share/project
+ENV PHP_FPM_USER_FIX "true"
 
 RUN apt-get update && apt-get install -y \
         libfreetype6-dev \
@@ -65,12 +67,22 @@ RUN docker-php-ext-install zip
 
 ### tools
 RUN apt-get -qq update && apt-get install -qqy \
-        vim
+        vim \
+        wget \
+        curl \
+        git \
+        zip
 COPY config/bash_additions /tmp/bash_additions
 RUN cat /tmp/bash_additions >> ~/.bashrc
 
+#### gosu
+ENV GOSU_VERSION 1.10
+RUN set -x \
+  && curl -sSLo /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture | awk -F- '{ print $NF }')" \
+  && chmod +x /usr/local/bin/gosu \
+  && gosu nobody true
+
 ### composer 1.6.3
-RUN apt-get -qq update && apt-get install -qqy curl wget zip git
 RUN curl -sS https://getcomposer.org/download/1.6.3/composer.phar > composer.phar
 RUN chmod +x composer.phar
 RUN mv composer.phar /usr/local/bin/composer
@@ -80,10 +92,20 @@ RUN chmod -R 777 /var/www/composer
 
 ### Install the symfony dump file globally
 RUN composer global require symfony/var-dumper
+### composer may not get run as root, so the home needs to be writable for all
 RUN chmod -R 777 /var/www/composer
 
 ### Add prepared php ini
 ADD config/php-cts.ini /usr/local/etc/php/conf.d/cts-default.ini
 
 ### Set Entrypoint
-WORKDIR /var/www/share/project
+RUN mkdir -p $PROJECT_PATH \
+    && chmod 777 $PROJECT_PATH
+COPY info.php $PROJECT_PATH
+
+WORKDIR $PROJECT_PATH
+
+COPY ./init /docker-entrypoint-init.d/
+COPY docker-php-entrypoint.sh /usr/local/bin/docker-php-entrypoint
+ENTRYPOINT ["docker-php-entrypoint"]
+CMD ["php-fpm"]
