@@ -1,23 +1,30 @@
-# Name ctsmedia/baseimage-web-apache:1.2.0
-FROM ctsmedia/baseimage-web-abstract:2.0.0
+# Name ctsmedia/apache:1.0.0
+FROM httpd:2.4
 MAINTAINER ctsmedia <info@cts-media.eu>
 
-### LAMP Setup
-RUN apt-get -qq update && apt-get -qqy install apache2
+### setup apache
+COPY config/httpd-php.conf /usr/local/apache2/conf/httpd-php.conf
+COPY config/httpd-php-ssl.conf /usr/local/apache2/conf/extra/httpd-php-ssl.conf
+RUN chown root:www-data /usr/local/apache2/conf/httpd-php.conf
+RUN echo "Include conf/httpd-php.conf" >> /usr/local/apache2/conf/httpd.conf
+COPY scripts/httpd-foreground /usr/local/bin/
 
-### Setup Apache (non project specific)
-RUN mkdir /etc/apache2/certs
+ENV PHPFPM_HOST="php"
+ENV PHPFPM_PATH="/var/www/share/project"
+ENV PHPFPM_PUBLIC_FOLDER=""
 
-COPY config/vhost /etc/apache2/sites-available/000-default.conf
-RUN a2ensite 000-default.conf
-RUN a2enmod rewrite
-RUN a2enmod ssl
-RUN a2enmod proxy_fcgi
-RUN a2enmod headers
+### Create ssl cert
+RUN apt-get update \
+	&& apt-get install -y --no-install-recommends \
+	    openssl
 
-### Init Project Skeleton
-ADD scripts/prepare-project.sh /etc/my_init.d/00_prepare-project.sh
-RUN chmod +x /etc/my_init.d/00_prepare-project.sh
-### Init Container
-ADD scripts/init.sh /etc/my_init.d/02_init.sh
-RUN chmod +x /etc/my_init.d/02_init.sh
+RUN openssl req -x509 -sha256 -days 1240 -nodes -newkey rsa:2048 \
+    -keyout /usr/local/apache2/conf/server.key \
+    -out /usr/local/apache2/conf/server.crt \
+    -subj "/C=DE/ST=NRW/L=COLOGNE/O=CTS/OU=IT/CN=localhost"
+
+### Open Ports
+EXPOSE 80 443
+
+### Clean up APT when done.
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
