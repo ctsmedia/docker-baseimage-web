@@ -55,6 +55,17 @@ Coming soon
 See the [compose-examples](compose-examples) dir for some examples getting you started within minutes.
 Variable compositions of php 7.0, 7.1, 5, apache, mysql or mariadb, phpmyadmin and more.
 
+## How to enable xdebug
+
+xdebug is not enabled by default due tue performance reasons expecially on mac. To enable it pass the following env variable:
+`ENABLE_XDEBUG=true`
+
+for example:
+
+`docker run -it -e PHP_FPM_USER_FIX=false -e ENABLE_XDEBUG=true ctsmedia/php:7.2-fpm bash`
+
+See example docker compose files accordingly.
+
 ## How to setup
 
 1. Grab one of the example composes files and put it into you project root / repository

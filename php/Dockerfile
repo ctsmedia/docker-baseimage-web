@@ -52,8 +52,7 @@ RUN set -e; \
         apt-get update && apt-get install -y \
             libsodium-dev \
         && docker-php-ext-install -j$(nproc) sodium \
-        && pecl install xdebug \
-        && docker-php-ext-enable xdebug; \
+        && pecl install xdebug; \
     fi;\
     '
 
