@@ -2,5 +2,6 @@
 set -e
 
 if [ "$ENABLE_XDEBUG" = "true" ]; then
-    docker-php-ext-enable xdebug
+    echo "Enabling xdebug"
+    gosu root docker-php-ext-enable xdebug
 fi

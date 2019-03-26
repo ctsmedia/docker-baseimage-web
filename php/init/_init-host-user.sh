@@ -2,6 +2,7 @@
 set -e
 
 # inspired by https://github.com/helderco/docker-php/blob/master/versions/7.2/init.d/mapuid.sh
+# needs to run before every other script so that www-data claims ownership over PROJECT_PATH
 
 if [ -d "${PROJECT_PATH}" ] && [ "$PHP_FPM_USER_FIX" = "true" ]; then
 
@@ -10,7 +11,9 @@ if [ -d "${PROJECT_PATH}" ] && [ "$PHP_FPM_USER_FIX" = "true" ]; then
     gid=$(gosu www-data stat -c '%g' "$PROJECT_PATH")
     www_data_uid=$(gosu www-data id -u)
 
+    echo "ppath ${PROJECT_PATH}"
     echo "Adjusting www-data user and group id if necessary"
+    echo "uid $uid vs wwwdata $www_data_uid"
 
     if [ "$www_data_uid" != "$uid" ]
         then
