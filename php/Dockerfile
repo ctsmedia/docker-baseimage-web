@@ -8,15 +8,25 @@ ENV COMPOSER_HOME /var/www/composer
 ENV PROJECT_PATH /var/www/share/project
 ENV PHP_FPM_USER_FIX "true"
 
+# install libs and tools
 RUN apt-get update && apt-get install -y \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
         libpng-dev \
         libxml2-dev \
         zlib1g-dev libicu-dev g++ \
+        ghostscript libmagickwand-dev \
+        wget \
+        curl \
+        vim \
+        git \
+        zip \
+    && pecl install imagick \
     && docker-php-ext-install -j$(nproc) iconv \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install -j$(nproc) gd
+    && docker-php-ext-install -j$(nproc) gd \
+    && docker-php-ext-enable imagick
+
 
 # Pre php 7 (xdebug > 2.6 requires php 7)
 RUN set -e; \
@@ -44,10 +54,10 @@ RUN set -e; \
     '
 
 
-# >= php 7.2 (mcrypt was replaced by sodium)
+# >= php 7.2 && != 7.4 (mcrypt was replaced by sodium)
 RUN set -e; \
     /bin/bash -c '\
-    if [[ "${PHP_VERSION}" =~ "7." && ! ( "${PHP_VERSION}" =~ "7.1" || "${PHP_VERSION}" =~ "7.0" ) ]]; then  \
+    if [[ "${PHP_VERSION}" =~ "7." && ! ( "${PHP_VERSION}" =~ "7.1" || "${PHP_VERSION}" =~ "7.0" || "${PHP_VERSION}" =~ "7.4" ) ]]; then  \
         echo "Installing php 7.2+ extensions"; \
         apt-get update && apt-get install -y \
             libsodium-dev \
@@ -55,6 +65,33 @@ RUN set -e; \
         && pecl install xdebug; \
     fi;\
     '
+
+# >= php 7.3 (libzip must be installed separately)
+RUN set -e; \
+    /bin/bash -c '\
+    if [[ "${PHP_VERSION}" =~ "7." && ! ( "${PHP_VERSION}" =~ "7.2" || "${PHP_VERSION}" =~ "7.1" || "${PHP_VERSION}" =~ "7.0" ) ]]; then  \
+        echo "Installing php 7.3+ extensions"; \
+        apt-get update && apt-get install -y \
+            libzip-dev; \
+    fi;\
+    '
+
+# >= php 7.4 (7.4 rc requires manuel xdebug build)
+#RUN set -e; \
+#    /bin/bash -c '\
+#    if [[ "${PHP_VERSION}" =~ "7." && ! ( "${PHP_VERSION}" =~ "7.3" || "${PHP_VERSION}" =~ "7.2" || "${PHP_VERSION}" =~ "7.1" || "${PHP_VERSION}" =~ "7.0" ) ]]; then  \
+#        echo "Installing php 7.4+ extensions"; \
+#        wget http://xdebug.org/files/xdebug-2.8.0beta1.tgz \
+#        && tar -xvzf xdebug-2.8.0beta1.tgz \
+#        && cd xdebug-2.8.0beta1 \
+#        && phpize \
+#        && ./configure \
+#        && make \
+#        && cp modules/xdebug.so /usr/local/lib/php/extensions/no-debug-non-zts-20190529 \
+#    fi;\
+#    '
+
+
 
 
 RUN docker-php-ext-install xml
@@ -64,13 +101,6 @@ RUN pecl install redis-3.1.2 \
 RUN docker-php-ext-install pdo_mysql
 RUN docker-php-ext-install zip
 
-### tools
-RUN apt-get -qq update && apt-get install -qqy \
-        vim \
-        wget \
-        curl \
-        git \
-        zip
 COPY config/bash_additions /tmp/bash_additions
 RUN cat /tmp/bash_additions >> ~/.bashrc
 
@@ -106,5 +136,9 @@ WORKDIR $PROJECT_PATH
 
 COPY ./init /docker-entrypoint-init.d/
 COPY docker-php-entrypoint.sh /usr/local/bin/docker-php-entrypoint
+
+# Force xdebug enabled
+RUN docker-php-ext-enable xdebug
+
 ENTRYPOINT ["docker-php-entrypoint"]
 CMD ["php-fpm"]
