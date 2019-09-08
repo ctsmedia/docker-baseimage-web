@@ -21,6 +21,7 @@ RUN apt-get update && apt-get install -y \
         vim \
         git \
         zip \
+        wait-for-it \
     && pecl install imagick \
     && docker-php-ext-install -j$(nproc) iconv \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
@@ -138,7 +139,7 @@ COPY ./init /docker-entrypoint-init.d/
 COPY docker-php-entrypoint.sh /usr/local/bin/docker-php-entrypoint
 
 # Force xdebug enabled
-RUN docker-php-ext-enable xdebug
+#RUN docker-php-ext-enable xdebug
 
 ENTRYPOINT ["docker-php-entrypoint"]
 CMD ["php-fpm"]
