@@ -23,6 +23,7 @@ If you want to changed that pass the env var: `PROJECT_PATH`. Our docker compose
     - zip
     - mcrypt (sodium for php 7.2)
     - xdebug
+    - exif
 
 - Tools
     - Vi(m)

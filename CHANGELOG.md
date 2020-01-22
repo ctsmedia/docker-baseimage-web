@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
+## 2020-01-22
+#### php
+- added exif extension
+
 ## 2019-09-03
 #### php
 - added 7.3

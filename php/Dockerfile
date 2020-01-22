@@ -101,6 +101,7 @@ RUN pecl install redis-3.1.2 \
     && docker-php-ext-enable redis
 RUN docker-php-ext-install pdo_mysql
 RUN docker-php-ext-install zip
+RUN docker-php-ext-install exif
 
 COPY config/bash_additions /tmp/bash_additions
 RUN cat /tmp/bash_additions >> ~/.bashrc
