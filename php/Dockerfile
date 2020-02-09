@@ -24,7 +24,8 @@ RUN apt-get update && apt-get install -y \
         wait-for-it \
     && pecl install imagick \
     && docker-php-ext-install -j$(nproc) iconv \
-    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+#    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
     && docker-php-ext-install -j$(nproc) gd \
     && docker-php-ext-enable imagick
 
@@ -73,7 +74,8 @@ RUN set -e; \
     if [[ "${PHP_VERSION}" =~ "7." && ! ( "${PHP_VERSION}" =~ "7.2" || "${PHP_VERSION}" =~ "7.1" || "${PHP_VERSION}" =~ "7.0" ) ]]; then  \
         echo "Installing php 7.3+ extensions"; \
         apt-get update && apt-get install -y \
-            libzip-dev; \
+            libzip-dev \
+        && pecl install xdebug; \
     fi;\
     '
 
