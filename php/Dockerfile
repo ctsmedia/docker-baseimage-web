@@ -79,24 +79,6 @@ RUN set -e; \
     fi;\
     '
 
-# >= php 7.4 (7.4 rc requires manuel xdebug build)
-#RUN set -e; \
-#    /bin/bash -c '\
-#    if [[ "${PHP_VERSION}" =~ "7." && ! ( "${PHP_VERSION}" =~ "7.3" || "${PHP_VERSION}" =~ "7.2" || "${PHP_VERSION}" =~ "7.1" || "${PHP_VERSION}" =~ "7.0" ) ]]; then  \
-#        echo "Installing php 7.4+ extensions"; \
-#        wget http://xdebug.org/files/xdebug-2.8.0beta1.tgz \
-#        && tar -xvzf xdebug-2.8.0beta1.tgz \
-#        && cd xdebug-2.8.0beta1 \
-#        && phpize \
-#        && ./configure \
-#        && make \
-#        && cp modules/xdebug.so /usr/local/lib/php/extensions/no-debug-non-zts-20190529 \
-#    fi;\
-#    '
-
-
-
-
 RUN docker-php-ext-install xml
 RUN docker-php-ext-configure intl && docker-php-ext-install intl
 RUN pecl install redis-3.1.2 \
