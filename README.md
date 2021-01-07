@@ -1,8 +1,12 @@
 [![](https://img.shields.io/github/license/ctsmedia/docker-baseimage-web.svg?style=flat-square)](https://github.com/ctsmedia/docker-baseimage-web)
 
-# CTS Docker Web images
+# e3N Docker Web images
 
-Based on the official docker images we did build a setup for easy setting up a local development environment for your php based web projects.  
+Based on the official docker images we did build a setup for easy setting up a local development environment for your php based web projects.
+This setup with bind mounts works on mac only due to different file permission and ownership handling on mac and linux. 
+See for details:
+- https://github.com/docker/for-mac/issues/2657
+- https://github.com/docker/for-mac/issues/5224
 
 ## What's inside
 
@@ -63,7 +67,7 @@ xdebug is not enabled by default due tue performance reasons expecially on mac. 
 
 for example:
 
-`docker run -it -e PHP_FPM_USER_FIX=false -e ENABLE_XDEBUG=true ctsmedia/php:7.2-fpm bash`
+`docker run -it -e ENABLE_XDEBUG=true ctsmedia/php:7.2-fpm bash`
 
 See example docker compose files accordingly.
 
@@ -73,7 +77,7 @@ See example docker compose files accordingly.
 2. Rename it to `docker-compose.yml`
 3. Adjust the compose file to your likings (documentation inside)
 4. Run `docker-compose up -d`
-5. Access the http container (in general http://localhost:80 on mac or on linux the container ip http://HTTP_CONTAINER_IP. You use `docker ps` or the program kitematic to find it. )
+5. Access the http container (in general http://localhost:80, you can use `docker ps` to find the port. )
 
 ## How to Build custom PHP image
 

@@ -2,11 +2,12 @@
 ARG PHP_VERSION
 FROM php:${PHP_VERSION}-fpm
 
-MAINTAINER ctsmedia <info@cts-media.eu>
+MAINTAINER e3n <info@e3n.de>
 
 ENV COMPOSER_HOME /var/www/composer
 ENV PROJECT_PATH /var/www/share/project
 ENV PHP_FPM_USER_FIX "true"
+ENV EDITOR 'vi'
 
 # install libs and tools
 RUN apt-get update && apt-get install -y \
@@ -110,8 +111,9 @@ RUN composer global require symfony/var-dumper
 ### composer may not get run as root, so the home needs to be writable for all
 RUN chmod -R 777 /var/www/composer
 
-### Add prepared php ini
-ADD config/php-cts.ini /usr/local/etc/php/conf.d/cts-default.ini
+### Add prepared php ini and php fpm config
+COPY config/php-cts.ini /usr/local/etc/php/conf.d/cts-default.ini
+COPY config/e3n-fpm.conf /usr/local/etc/php-fpm.d/zzz-e3n-fpm.conf
 
 ### Set Entrypoint
 RUN mkdir -p $PROJECT_PATH \
@@ -127,4 +129,4 @@ COPY docker-php-entrypoint.sh /usr/local/bin/docker-php-entrypoint
 #RUN docker-php-ext-enable xdebug
 
 ENTRYPOINT ["docker-php-entrypoint"]
-CMD ["php-fpm"]
+CMD ["php-fpm", "-R"]
