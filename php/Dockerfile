@@ -30,6 +30,7 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install -j$(nproc) gd \
     && docker-php-ext-enable imagick
 
+# Imagick not supported yet in php8 see: https://github.com/Imagick/imagick/issues/358
 
 # Pre php 7 (xdebug > 2.6 requires php 7)
 RUN set -e; \
@@ -80,13 +81,26 @@ RUN set -e; \
     fi;\
     '
 
+# >= php 8.0 (libzip must be installed separately)
+RUN set -e; \
+    /bin/bash -c '\
+    if [[ "${PHP_VERSION}" =~ "8." ]]; then  \
+        echo "Installing php 8.X extensions"; \
+        apt-get update && apt-get install -y \
+            libzip-dev \
+        && pecl install xdebug; \
+    fi;\
+    '
+
 RUN docker-php-ext-install xml
 RUN docker-php-ext-configure intl && docker-php-ext-install intl
-RUN pecl install redis-3.1.2 \
+#RUN pecl install redis-3.1.2 \
+RUN pecl install redis \
     && docker-php-ext-enable redis
 RUN docker-php-ext-install pdo_mysql
 RUN docker-php-ext-install zip
 RUN docker-php-ext-install exif
+RUN docker-php-ext-install soap
 
 COPY config/bash_additions /tmp/bash_additions
 RUN cat /tmp/bash_additions >> ~/.bashrc
@@ -99,7 +113,7 @@ RUN set -x \
   && gosu nobody true
 
 ### composer 1.6.3
-RUN curl -sS https://getcomposer.org/download/1.6.3/composer.phar > composer.phar
+RUN curl -sS https://getcomposer.org/download/2.0.8/composer.phar > composer.phar
 RUN chmod +x composer.phar
 RUN mv composer.phar /usr/local/bin/composer
 RUN mkdir -p /var/www/composer
@@ -115,6 +129,9 @@ RUN chmod -R 777 /var/www/composer
 COPY config/php-cts.ini /usr/local/etc/php/conf.d/cts-default.ini
 COPY config/e3n-fpm.conf /usr/local/etc/php-fpm.d/zzz-e3n-fpm.conf
 
+### Fix Imagick
+RUN sed -i "s/rights\=\"none\" pattern\=\"PDF\"/rights\=\"read\|write\" pattern\=\"PDF\"/" /etc/ImageMagick-6/policy.xml
+
 ### Set Entrypoint
 RUN mkdir -p $PROJECT_PATH \
     && chmod 777 $PROJECT_PATH
@@ -126,7 +143,7 @@ COPY ./init /docker-entrypoint-init.d/
 COPY docker-php-entrypoint.sh /usr/local/bin/docker-php-entrypoint
 
 # Force xdebug enabled
-#RUN docker-php-ext-enable xdebug
+RUN docker-php-ext-enable xdebug
 
 ENTRYPOINT ["docker-php-entrypoint"]
 CMD ["php-fpm", "-R"]
