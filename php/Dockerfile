@@ -112,9 +112,10 @@ RUN set -x \
   && chmod +x /usr/local/bin/gosu \
   && gosu nobody true
 
-### composer 1.6.3
-RUN curl -sS https://getcomposer.org/download/2.0.8/composer.phar > composer.phar
+### composer 2.3.5
+RUN curl -sS https://getcomposer.org/download/2.3.5/composer.phar > composer.phar
 RUN chmod +x composer.phar
+
 RUN mv composer.phar /usr/local/bin/composer
 RUN mkdir -p /var/www/composer
 ### composer may not get run as root, so the home needs to be writable for all
